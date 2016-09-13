@@ -1,17 +1,20 @@
 # wires-mongo
 
-An ambitious ORM for ambitious project (LEGACY CODE, REQUIRES REFACTORING)
+An ambitious ORM for ambitious project
+
+
 
 
 ## Features
-
   * Model mapping
   * Automatic "join" query
   * List relation joining with optimized query
   * Promise based
   * Schema with validations
   * Simple but powerful API
-  * Good test coverage with comprehensive examples
+  * Typescript support
+  * Good test coverage with comprehensive examples (appox 200 tests)
+  * Running for 2 years in production
 
 
 ## Installation
@@ -22,8 +25,10 @@ $ npm install wires-mongo
 
 ## Connecting db service
 
-ORM does not have a connector, you need to register wires-domain service that returns mongo cursor.
-
+ORM does not have a connector, you need to register realm-service service that returns mongo cursor.
+This is a necessary step, models don't require any additional connection,
+in fact they are refering to realm service (for convience)
+on "all()" and "first()" commands
 
 ```bash
 $ npm install wires-domain
@@ -69,6 +74,21 @@ var = Model.extend({
 		password: {},
 	}
 })
+```
+
+For typescript:
+
+```js
+import Model from "realm-mongo";
+export class User extends Model<User> {
+    get collection() { return "users"; }
+    get schema() {
+        return {
+            id: {},
+            email: {},
+        };
+    }
+}
 ```
 
 ## Schema parameters
@@ -315,7 +335,7 @@ Don't use limit() or skip() while performing firstRandom(). It will be overridde
 
 ### Find by id
 IF you use find with 1 argument, wires-mongo assumes you want to find a record by id.
-You can pass a string, model reference, or ObjectID accordingly  
+You can pass a string, model reference, or ObjectID accordingly
 
 ```js
 TestUser.find("559a508ce147b840c4986535")
