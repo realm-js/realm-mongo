@@ -2,6 +2,14 @@
 
 An ambitious ORM for an ambitious project
 
+
+```js
+User.find(user)
+   .required()
+   .with("sessions", Session)
+   .with("friends", User.with("friends", User.find({active : true})))
+```
+
 ## Features
   * Model mapping
   * Automatic "join" query
