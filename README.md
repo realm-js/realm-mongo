@@ -10,7 +10,7 @@ An ambitious ORM for an ambitious project
   * Schema with validations
   * Simple but powerful API
   * Typescript support
-  * Good test coverage with comprehensive examples (appox 200 tests)
+  * Every single edge case is thoroughly tested (appox 200 tests with all kinds of situations)
   * Running for 2 years in production
 
 
