@@ -32,7 +32,7 @@ $ npm install realm-mongo realm-js
 ```
 
 ```js
-var domain = require("wires-domain")
+var domain = require("realm-mongo")
 var mongo = require('mongodb');
 var Connection;
 domain.service("$db", function() {
@@ -59,7 +59,7 @@ domain.service("$db", function() {
 Schemas are mandatory. It allows you to do automatic validation on save and update
 
 ```js
-var Model = require('wires-mongo')
+var Model = require('realm-mongo')
 var = Model.extend({
 	collection: "super_test",
 	schema: {
