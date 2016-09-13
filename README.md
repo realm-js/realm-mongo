@@ -31,7 +31,7 @@ in fact they are refering to realm service (for convience)
 on "all()" and "first()" commands
 
 ```bash
-$ npm install wires-domain
+$ npm install realm-mongo realm-js
 ```
 
 ```js
@@ -43,7 +43,7 @@ domain.service("$db", function() {
 		if (Connection) {
 			return resolve(Connection);
 		}
-		mongo.MongoClient.connect('mongodb://localhost:27017/wires_mongo_test', {
+		mongo.MongoClient.connect('mongodb://localhost:27017/test', {
 			server: {
 				auto_reconnect: true
 			}
@@ -59,7 +59,7 @@ domain.service("$db", function() {
 ```
 
 ## Schemas
-Schemas are mandatory. It allows you to do automatic validation on save, and brings transparency to your code.
+Schemas are mandatory. It allows you to do automatic validation on save and update
 
 ```js
 var Model = require('wires-mongo')
