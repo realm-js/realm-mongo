@@ -1,9 +1,6 @@
-# wires-mongo
+# realm-mongo
 
-An ambitious ORM for ambitious project
-
-
-
+An ambitious ORM for an ambitious project
 
 ## Features
   * Model mapping
