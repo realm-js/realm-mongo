@@ -32,26 +32,25 @@ $ npm install realm-mongo realm-js
 ```
 
 ```js
-var domain = require("realm-mongo")
-var mongo = require('mongodb');
-var Connection;
-domain.service("$db", function() {
-	return new Promise(function(resolve, reject) {
-		if (Connection) {
-			return resolve(Connection);
-		}
-		mongo.MongoClient.connect('mongodb://localhost:27017/test', {
-			server: {
-				auto_reconnect: true
-			}
-		}, function(err, _db) {
-			if (err) {
-				return reject(err);
-			}
-			Connection = _db;
-			return resolve(Connection);
-		})
-	})
+const realm = require("realm-js");
+const mongo = require("mongodb");
+const MONGO_URI = "mongodb://localhost:27017/test";
+let MONGODB_CONNECTION;
+realm.service("$realmMongoConnection", () => {
+    return new Promise((resolve, reject) => {
+        if (!MONGODB_CONNECTION) {
+            mongo.MongoClient.connect(MONGO_URI, {
+                server: {
+                    auto_reconnect: true,
+                }
+            }, (err, db) => {
+                MONGODB_CONNECTION = db;
+                return resolve(MONGODB_CONNECTION);
+            });
+        } else {
+            return resolve(MONGODB_CONNECTION);
+        }
+    });
 });
 ```
 
