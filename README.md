@@ -22,7 +22,7 @@ $ npm install wires-mongo
 
 ## Connecting db service
 
-ORM does not have a connector, you need to register realm-service service that returns mongo cursor.
+ORM does not have a connector, you need to register realm-service that returns a mongo cursor.
 This is a necessary step, models don't require any additional connection,
 in fact they are refering to realm service (for convience)
 on "all()" and "first()" commands
