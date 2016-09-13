@@ -1468,4 +1468,5 @@ realm.service("$wiresMongoIndexer", function() {
       });
    };
 });
+Model.default = Model;
 module.exports = Model;

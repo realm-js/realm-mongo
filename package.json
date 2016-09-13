@@ -1,7 +1,8 @@
 {
-  "name": "wires-mongo",
-  "version": "1.6.61",
+  "name": "realm-mongo",
+  "version": "1.6.62",
   "description": "",
+  "typings": "./index.d.ts",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
