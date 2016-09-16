@@ -6,7 +6,7 @@ export default class Model<T>  {
 
     projection(str: string): T
     sort(key: any, direction?: string): T
-    set(key: string, obj: any): T
+    set(obj: any, value?: any): T
     get(key: string, defaultValue?: any): any
     getStringId(): string
     toJSON(): any;
