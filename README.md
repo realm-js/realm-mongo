@@ -2,6 +2,14 @@
 
 An ambitious ORM for an ambitious project
 
+
+```js
+User.find(user)
+   .required()
+   .with("sessions", Session)
+   .with("friends", User.with("friends", User.find({active : true})))
+```
+
 ## Features
   * Model mapping
   * Automatic "join" query
@@ -10,7 +18,7 @@ An ambitious ORM for an ambitious project
   * Schema with validations
   * Simple but powerful API
   * Typescript support
-  * Good test coverage with comprehensive examples (appox 200 tests)
+  * Every single edge case is thoroughly tested (appox 200 tests with all kinds of situations)
   * Running for 2 years in production
 
 
@@ -22,7 +30,7 @@ $ npm install wires-mongo
 
 ## Connecting db service
 
-ORM does not have a connector, you need to register realm-service service that returns mongo cursor.
+ORM does not have a connector, you need to register realm-service that returns a mongo cursor.
 This is a necessary step, models don't require any additional connection,
 in fact they are refering to realm service (for convience)
 on "all()" and "first()" commands
@@ -32,26 +40,25 @@ $ npm install realm-mongo realm-js
 ```
 
 ```js
-var domain = require("wires-domain")
-var mongo = require('mongodb');
-var Connection;
-domain.service("$db", function() {
-	return new Promise(function(resolve, reject) {
-		if (Connection) {
-			return resolve(Connection);
-		}
-		mongo.MongoClient.connect('mongodb://localhost:27017/test', {
-			server: {
-				auto_reconnect: true
-			}
-		}, function(err, _db) {
-			if (err) {
-				return reject(err);
-			}
-			Connection = _db;
-			return resolve(Connection);
-		})
-	})
+const realm = require("realm-js");
+const mongo = require("mongodb");
+const MONGO_URI = "mongodb://localhost:27017/test";
+let MONGODB_CONNECTION;
+realm.service("$realmMongoConnection", () => {
+    return new Promise((resolve, reject) => {
+        if (!MONGODB_CONNECTION) {
+            mongo.MongoClient.connect(MONGO_URI, {
+                server: {
+                    auto_reconnect: true,
+                }
+            }, (err, db) => {
+                MONGODB_CONNECTION = db;
+                return resolve(MONGODB_CONNECTION);
+            });
+        } else {
+            return resolve(MONGODB_CONNECTION);
+        }
+    });
 });
 ```
 
@@ -59,7 +66,7 @@ domain.service("$db", function() {
 Schemas are mandatory. It allows you to do automatic validation on save and update
 
 ```js
-var Model = require('wires-mongo')
+var Model = require('realm-mongo')
 var = Model.extend({
 	collection: "super_test",
 	schema: {
