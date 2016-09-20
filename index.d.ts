@@ -25,7 +25,9 @@ export default class Model<T>  {
     count(): Promise<number>
     firstRandom(): Promise<T>
     all(): Promise<T[]>
+
     paginate(obj: any): Promise<any>
+    drop(): Promise<any>
 
     static find<U>(obj?: any): Model<U>;
 }
