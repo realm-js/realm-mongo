@@ -450,6 +450,41 @@ TestUser.sort({ // Passing some specific condition
 });
 ```
 
+### Tailable
+
+In order to make your collection tailable, first set it up
+```
+User.createCollection({
+   capped: true,
+   size: 100000
+})
+```
+
+Then define a criteria for your collection
+
+```
+TailableTest.tail([opts], [criteria]);
+```
+Whereas opts by default looks like:
+
+```
+{
+  tailable: true,
+  awaitdata: true,
+  numberOfRetries: Number.MAX_VALUE
+}
+```
+
+And criteria 
+```
+{
+   _id: {
+     $gt: ObjectID()
+   }
+}
+```
+
+
 ### Query with projection
 It is possible to pass a projection. Add a projection to your model's properties
 
