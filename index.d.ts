@@ -30,5 +30,6 @@ export default class Model<T>  {
     drop(): Promise<any>
     static drop(): Promise<any>
     static find<U>(obj?: any): Model<U>;
+    static createCollection(opts : any);
+    static tail(opts : any, criteria : any) : Promise<any>;
 }
-

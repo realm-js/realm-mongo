@@ -1456,8 +1456,6 @@ Model = AccessHelpers.extend({
                model.forceId(item._id);
                model.onAfterSave();
             }
-
-            const resp = (fn) => userFn = fn;
             stream.on('data', function(doc) {
                callInstance(doc)
             });
@@ -1467,7 +1465,7 @@ Model = AccessHelpers.extend({
             stream.on('end', function() {
                console.log('End of stream');
             });
-            return resolve(resp);
+            return resolve(stream);
          });
       });
    },
