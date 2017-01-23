@@ -205,7 +205,13 @@ var EventBase = ValidationBase.extend({
    onBeforeUpdate: function(resolve, reject) {
       resolve();
    },
+   onAfterUpdate: function(resolve, reject) {
+      resolve();
+   },
    onBeforeSave: function(resolve, reject) {
+      resolve();
+   },
+   onAfterSave: function(resolve, reject) {
       resolve();
    },
    onBeforeRemove: function(resolve, reject) {
@@ -667,7 +673,7 @@ var DBRequest = Query.extend({
                      var responseArray = records.ops || records;
                      self._existing_record_id = responseArray[0]._id;
                      self.set(responseArray[0]);
-                     return resolve(self);
+                     return self.onAfterSave(() => resolve(self), (e) => reject(e));
                   });
                } else {
                   // Removing _id
@@ -690,10 +696,10 @@ var DBRequest = Query.extend({
                         return reject(e);
                      }
                      self.set(doc.value || doc);
-                     return resolve(self);
+                     return self.onAfterUpdate(() => resolve(self), (e) => reject(e));
                   });
                }
-            });
+            }).catch(reject);
          });
       });
    },
@@ -1407,6 +1413,63 @@ Model = AccessHelpers.extend({
    aggregate: function() {
       var instance = new this();
       return instance.aggregate.apply(instance, arguments);
+   },
+   createCollection: function(opts) {
+      var instance = new this();
+      return new Promise(function(resolve, reject) {
+         realm.require('$realmMongoConnection', function($db) {
+
+            $db.createCollection(instance.collectionName, opts, function(err, data) {
+               if (err) {
+                  return reject(err);
+               }
+               return resolve(data);
+            });
+         }).catch(reject);
+      });
+   },
+   getConnection()
+   {
+      return realm.require('$realmMongoConnection', function($db) {
+         return $db;
+      });
+   },
+   tail: function(crit, opts) {
+      var instance = new this();
+      let inst = this;
+      return realm.require('$realmMongoConnection', function($db) {
+         opts = opts || {
+            tailable: true,
+            awaitdata: true,
+            numberOfRetries: Number.MAX_VALUE
+         }
+         crit = crit || {
+            _id: {
+               $gt: ObjectID()
+            }
+         }
+         $db.collection(instance.collectionName, function(err, coll) {
+            var stream = coll.find(crit, opts).stream();
+            let userFn;
+            const callInstance = (item) => {
+               let model = new inst(item);
+               model.forceId(item._id);
+               model.onAfterSave();
+            }
+
+            const resp = (fn) => userFn = fn;
+            stream.on('data', function(doc) {
+               callInstance(doc)
+            });
+            stream.on('error', function(val) {
+               console.log('Error: %j', val);
+            });
+            stream.on('end', function() {
+               console.log('End of stream');
+            });
+            return resolve(resp);
+         });
+      });
    },
    required: function() {
       var instance = new this();
