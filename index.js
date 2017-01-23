@@ -1428,8 +1428,7 @@ Model = AccessHelpers.extend({
          }).catch(reject);
       });
    },
-   getConnection()
-   {
+   getConnection() {
       return realm.require('$realmMongoConnection', function($db) {
          return $db;
       });
@@ -1448,25 +1447,28 @@ Model = AccessHelpers.extend({
                $gt: ObjectID()
             }
          }
-         $db.collection(instance.collectionName, function(err, coll) {
-            var stream = coll.find(crit, opts).stream();
-            let userFn;
-            const callInstance = (item) => {
-               let model = new inst(item);
-               model.forceId(item._id);
-               model.onAfterSave();
-            }
-            stream.on('data', function(doc) {
-               callInstance(doc)
+         return new Promise((resolve, reject) => {
+            $db.collection(instance.collectionName).find(crit, opts, function(err, coll) {
+               var stream = coll
+               let userFn;
+               const callInstance = (item) => {
+                  let model = new inst(item);
+                  model.forceId(item._id);
+                  model.onAfterSave();
+               }
+               stream.on('data', function(doc) {
+                  callInstance(doc)
+               });
+               stream.on('error', function(val) {
+                  console.log('Error: %j', val);
+               });
+               stream.on('end', function() {
+                  console.log('End of stream');
+               });
+               return resolve(stream);
             });
-            stream.on('error', function(val) {
-               console.log('Error: %j', val);
-            });
-            stream.on('end', function() {
-               console.log('End of stream');
-            });
-            return resolve(stream);
          });
+
       });
    },
    required: function() {
