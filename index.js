@@ -1422,7 +1422,7 @@ Model = AccessHelpers.extend({
             if( exists){
                const msg = `createCollection: collection ${name} exists`;
                console.log(msg);
-               return reject({ message : msg});
+               throw {message : msg};
             }
          }).then(() => {
             return new Promise(function(resolve, reject){
