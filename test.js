@@ -10,8 +10,8 @@ var TailableTest = Model.extend({
       _id: [],
       name: {}
    },
-   onAfterSave: function(){
-      console.log(this.toJSON())
+   onTail: function(){
+      console.log("tailed stuff",this.toJSON())
    }
 })
 
@@ -31,3 +31,7 @@ TailableTest.createCollection({
 .catch(e => {
    console.log(e)
 })
+
+setTimeout(() => {
+   new TailableTest({name : "after 1 sec"}).save();
+},1000)

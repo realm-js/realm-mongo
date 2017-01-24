@@ -214,6 +214,9 @@ var EventBase = ValidationBase.extend({
    onAfterSave: function(resolve, reject) {
       resolve();
    },
+   onTail: function(resolve, reject) {
+      resolve();
+   },
    onBeforeRemove: function(resolve, reject) {
       resolve();
    },
@@ -1466,28 +1469,27 @@ Model = AccessHelpers.extend({
          const callInstance = (item) => {
             let model = new inst(item);
             model.forceId(item._id);
-            model.onAfterSave(() => {}, (e) => {
+            model.onTail(() => {}, (e) => {
                console.error(`Error in onAfterSave in ${instance.collectionName}`);
                console.error(e);
             });
          }
          return new Promise((resolve, reject) => {
             $db.collection(instance.collectionName, (err, collection) => {
-               var stream = collection.find(crit, opts, {
-                  tailable: true,
-                  awaitdata: true,
-                  numberOfRetries: Number.MAX_VALUE
-               }).stream();
-               stream.on('data', function(doc) {
-                  callInstance(doc)
-               });
-               stream.on('error', function(val) {
-                  console.log('Error: %j', val);
-               });
-               stream.on('end', function() {
-                  console.log('End of stream');
-               });
-               return resolve(stream);
+               var stream = collection.find(crit, opts, function(err, stream){
+                  stream.on('data', function(doc) {
+                     callInstance(doc)
+                  });
+                  stream.on('error', function(val) {
+                     console.log('Error: %j', val);
+                  });
+                  stream.on('end', function() {
+                     console.log('End of stream');
+                  });
+                  return resolve(stream);
+               })
+
+
             });
          });
 
