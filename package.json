@@ -1,6 +1,6 @@
 {
   "name": "realm-mongo",
-  "version": "1.6.75",
+  "version": "1.6.76",
   "description": "",
   "typings": "./index.d.ts",
   "main": "index.js",

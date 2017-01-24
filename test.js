@@ -5,7 +5,7 @@ var Model = require('./index')
 var TestUser = require("./test/model.js")
 
 var TailableTest = Model.extend({
-   collection: "tailable_test",
+   collection: "tailable_test_hello6",
    schema: {
       _id: [],
       name: {}
@@ -18,5 +18,16 @@ var TailableTest = Model.extend({
 TailableTest.createCollection({
    capped: true,
    size: 100000
+}).then(x => {
+   return TailableTest.find().count();
+}).then(count => {
+   if( !count ){
+      return new TailableTest().save();
+   }
+
+}).then(() => {
+   return TailableTest.tail();
 })
-TailableTest.tail();
+.catch(e => {
+   console.log(e)
+})

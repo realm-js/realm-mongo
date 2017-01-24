@@ -1418,21 +1418,13 @@ Model = AccessHelpers.extend({
       var instance = new this();
       let name = instance.collectionName;
       return this.getConnection().then(db => {
-         return this.collectionExists(name).then(exists => {
-            if( exists){
-               const msg = `createCollection: collection ${name} exists`;
-               console.log(msg);
-               throw {message : msg};
-            }
-         }).then(() => {
-            return new Promise(function(resolve, reject){
-               db.createCollection(instance.collectionName, opts, function(err, data) {
-                  if (err) {
-                     return reject(err);
-                  }
-                  return resolve(data);
-               });
-            })
+         return new Promise(function(resolve, reject) {
+            db.createCollection(instance.collectionName, opts, function(err, data) {
+               if (err) {
+                  return reject(err);
+               }
+               return resolve(data);
+            });
          });
       });
    },
@@ -1441,13 +1433,15 @@ Model = AccessHelpers.extend({
          return $db;
       });
    },
-   collectionExists: function(name){
+   collectionExists: function(name) {
       var instance = new this();
       name = name || instance.collectionName;
       return this.getConnection().then((db) => {
-         return new Promise(function(resolve, reject){
-            db.listCollections({name : name}).toArray(function(err, items) {
-               if( err){
+         return new Promise(function(resolve, reject) {
+            db.listCollections({
+               name: name
+            }).toArray(function(err, items) {
+               if (err) {
                   return reject(err);
                }
                return resolve(items.length > 0)
@@ -1469,15 +1463,18 @@ Model = AccessHelpers.extend({
                $gt: ObjectID()
             }
          }
+         const callInstance = (item) => {
+            let model = new inst(item);
+            model.forceId(item._id);
+            model.onAfterSave();
+         }
          return new Promise((resolve, reject) => {
-            $db.collection(instance.collectionName).find(crit, opts, function(err, coll) {
-               var stream = coll
-               let userFn;
-               const callInstance = (item) => {
-                  let model = new inst(item);
-                  model.forceId(item._id);
-                  model.onAfterSave();
-               }
+            $db.collection(instance.collectionName, (err, collection) => {
+               var stream = collection.find(crit, opts, {
+                  tailable: true,
+                  awaitdata: true,
+                  numberOfRetries: Number.MAX_VALUE
+               }).stream();
                stream.on('data', function(doc) {
                   callInstance(doc)
                });
