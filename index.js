@@ -1466,7 +1466,10 @@ Model = AccessHelpers.extend({
          const callInstance = (item) => {
             let model = new inst(item);
             model.forceId(item._id);
-            model.onAfterSave();
+            model.onAfterSave(() => {}, (e) => {
+               console.error(`Error in onAfterSave in ${instance.collectionName}`);
+               console.error(e);
+            });
          }
          return new Promise((resolve, reject) => {
             $db.collection(instance.collectionName, (err, collection) => {
