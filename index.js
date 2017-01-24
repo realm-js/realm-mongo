@@ -1416,16 +1416,24 @@ Model = AccessHelpers.extend({
    },
    createCollection: function(opts) {
       var instance = new this();
-      return new Promise(function(resolve, reject) {
-         realm.require('$realmMongoConnection', function($db) {
-
-            $db.createCollection(instance.collectionName, opts, function(err, data) {
-               if (err) {
-                  return reject(err);
-               }
-               return resolve(data);
-            });
-         }).catch(reject);
+      let name = instance.collectionName;
+      return this.getConnection().then(db => {
+         return this.collectionExists(name).then(exists => {
+            if( exists){
+               const msg = `createCollection: collection ${name} exists`;
+               console.log(msg);
+               return reject({ message : msg});
+            }
+         }).then(() => {
+            return new Promise(function(resolve, reject){
+               db.createCollection(instance.collectionName, opts, function(err, data) {
+                  if (err) {
+                     return reject(err);
+                  }
+                  return resolve(data);
+               });
+            })
+         });
       });
    },
    getConnection() {
