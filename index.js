@@ -1433,6 +1433,20 @@ Model = AccessHelpers.extend({
          return $db;
       });
    },
+   collectionExists: function(name){
+      var instance = new this();
+      name = name || instance.collectionName;
+      return this.getConnection().then((db) => {
+         return new Promise(function(resolve, reject){
+            db.listCollections({name : name}).toArray(function(err, items) {
+               if( err){
+                  return reject(err);
+               }
+               return resolve(items.length > 0)
+            });
+         });
+      });
+   },
    tail: function(crit, opts) {
       var instance = new this();
       let inst = this;

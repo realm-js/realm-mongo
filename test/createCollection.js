@@ -29,5 +29,13 @@ describe('Create collection an tailable cursor', function() {
       }).catch(done)
    });
 
+   it("Check exists", (done) => {
+      TailableTest.collectionExists().then((data) => {
+         console.log("data",data)
+         done();
+      }).catch(done)
+   });
+
+
 
 });

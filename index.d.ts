@@ -31,5 +31,6 @@ export default class Model<T>  {
     static drop(): Promise<any>
     static find<U>(obj?: any): Model<U>;
     static createCollection(opts? : any);
+    static collectionExists(name? : string) : Promise<boolean>;
     static tail(opts? : any, criteria? : any) : Promise<any>;
 }
