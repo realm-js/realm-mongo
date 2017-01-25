@@ -33,4 +33,5 @@ export default class Model<T>  {
     static createCollection(opts? : any);
     static collectionExists(name? : string) : Promise<boolean>;
     static tail(opts? : any, criteria? : any) : Promise<any>;
+    static getConnection() : any;
 }
