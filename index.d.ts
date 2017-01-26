@@ -1,13 +1,13 @@
 
 export default class Model<T>  {
     constructor(obj?: any)
-    find(obj?: any): T
-    skip(number?: any): T
-    limit(number?: any): T
+    find(obj?: any): Model<T>
+    skip(number?: any): Model<T>
+    limit(number?: any): Model<T>
     findByText(str: string);
 
-    projection(str: string); T
-    sort(key: any, direction?: string) : T;
+    projection(str: string); Model<T>
+    sort(key: any, direction?: string) : Model<T>;
     set(obj: any, value?: any);
     get(key: string, defaultValue?: any): any
     getStringId(): string
@@ -17,16 +17,16 @@ export default class Model<T>  {
     required(message?: string): T
     with(key: string, obj: Model<any> | { (...args): any }): T
     exclude(target: Model<any>, key: string)
-    add(target: Model<any>, key: string): Promise<T>
+    add(target: Model<any>, key: string): Promise<Model<T>>
     equals(target: Model<any>): boolean
 
-    save(): Promise<T>
-    remove(): Promise<T>;
+    save(): Promise<Model<T>>
+    remove(): Promise<Model<T>>;
     removeAll(): Promise<any>
-    first(): Promise<T>
+    first(): Promise<Model<T>>
     count(): Promise<number>
-    firstRandom(): Promise<T>
-    all(): Promise<T[]>
+    firstRandom(): Promise<Model<T>>
+    all(): Promise<Model<T>[]>
 
     paginate(obj: any): Promise<any>
     drop(): Promise<any>
