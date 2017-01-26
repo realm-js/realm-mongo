@@ -2,11 +2,13 @@
 export default class Model<T>  {
     constructor(obj?: any)
     find(obj?: any): T
-    findByText(str: string): T
+    skip(number?: any): T
+    limit(number?: any): T
+    findByText(str: string);
 
-    projection(str: string): T
-    sort(key: any, direction?: string): T
-    set(obj: any, value?: any): T
+    projection(str: string); T
+    sort(key: any, direction?: string);
+    set(obj: any, value?: any);
     get(key: string, defaultValue?: any): any
     getStringId(): string
     toJSON(): any;
