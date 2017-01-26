@@ -7,7 +7,7 @@ export default class Model<T>  {
     findByText(str: string);
 
     projection(str: string); T
-    sort(key: any, direction?: string);
+    sort(key: any, direction?: string) : T;
     set(obj: any, value?: any);
     get(key: string, defaultValue?: any): any
     getStringId(): string
