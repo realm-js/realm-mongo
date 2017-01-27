@@ -6,7 +6,7 @@ export default class Model<T>  {
     limit(number?: any): Model<T>
     findByText(str: string);
 
-    projection(str: string); Model<T>
+    projection(str: string) : Model<T>;
     sort(key: any, direction?: string) : Model<T>;
     set(obj: any, value?: any);
     get(key: string, defaultValue?: any): any
